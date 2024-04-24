@@ -1,0 +1,4 @@
+pyinotify==0.9.6
+eventlet==0.36.1
+python-socketio==4.6.0
+python-engineio==3.13.2

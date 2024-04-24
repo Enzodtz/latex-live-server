@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Live Server</title>
+    <meta charset="UTF-8">
+    <style>
+    * {
+      margin: 0;
+    }
+    body {
+      overflow: hidden;
+    }
+    embed {
+      width: 100vw;
+      height: 100vh;
+    }
+    </style>
+  </head>
+  <body>
+    <embed src="/document.pdf" type="application/pdf" id="pdf">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
+    <script>
+       const socket = io('http://127.0.0.1:8000');
+       socket.connect();
+
+       socket.on('connect', (socket) => {
+         console.log("Connected to server");
+       });
+
+       socket.on('disconnect', (socket) => {
+         console.log("Disconnected from server");
+       });
+
+       socket.on("reload", (socket) => {
+         const pdf = document.getElementById("pdf");
+         const clone = pdf.cloneNode(true);
+         pdf.parentNode.replaceChild(clone, pdf);
+       });
+    </script>
+  </body>
+</html>
