@@ -6,7 +6,7 @@ def build_app(sio_app: socketio.WSGIApp, cmd_dir: str, latex_filename: str):
     pdf_filename = ".".join(latex_filename.split(".")[:-1]) + ".pdf"
     pdf_path = os.path.join(cmd_dir, pdf_filename)
     base_path = os.path.dirname(os.path.realpath(__file__))
-    html_path = os.path.join(base_path, "index_html")
+    html_path = os.path.join(base_path, "index.html")
 
     def app(env, start_response, *args, **kwargs):
         path = env["PATH_INFO"]
