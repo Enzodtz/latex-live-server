@@ -20,11 +20,18 @@
     <embed src="/document.pdf" type="application/pdf" id="pdf">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"></script>
     <script>
+       function reload() {
+         const pdf = document.getElementById("pdf");
+         const clone = pdf.cloneNode(true);
+         pdf.parentNode.replaceChild(clone, pdf);
+       }
+    
        const socket = io('http://127.0.0.1:8000');
        socket.connect();
 
        socket.on('connect', (socket) => {
          console.log("Connected to server");
+         reload();
        });
 
        socket.on('disconnect', (socket) => {
@@ -32,9 +39,7 @@
        });
 
        socket.on("reload", (socket) => {
-         const pdf = document.getElementById("pdf");
-         const clone = pdf.cloneNode(true);
-         pdf.parentNode.replaceChild(clone, pdf);
+         reload();
        });
     </script>
   </body>
