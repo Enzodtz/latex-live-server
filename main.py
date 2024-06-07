@@ -45,8 +45,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "-a",
         "--cmd_args",
-        default="",
-        help="Args to run command with",
+        default=[],
+        nargs="*",
+        help="Arg to run command with (can pass multiple)",
     )
     parser.add_argument(
         "-o",

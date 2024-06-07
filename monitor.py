@@ -4,7 +4,7 @@ import logging
 import eventlet
 import subprocess
 import sys
-from typing import Optional
+from typing import List, Optional
 
 
 def on_change(
@@ -12,18 +12,31 @@ def on_change(
     cmd_dir: str,
     cmd: str,
     latex_filename: str,
-    cmd_args: str,
+    cmd_args: List[str],
     cmd_override: Optional[str],
 ):
     logging.info("Reloading...")
     try:
-        subprocess.check_call(
-            [cmd_override] if cmd_override else [cmd, latex_filename, cmd_args],
+        output = subprocess.run(
+            (
+                [cmd_override]
+                if cmd_override
+                else [cmd, "-interaction", "nonstopmode", latex_filename] + cmd_args
+            ),
             cwd=cmd_dir,
-            stdout=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
         )
+
+        if output.returncode != 0:
+            err = output.stdout.decode()
+            err = err.split("!")[1].split("\n")[0].replace(" .", ".")[1:]
+            logging.info("Error while compiling latex:")
+            logging.info(err)
+            return
+
     except Exception as e:
-        sys.exit(str(e))
+        logging.info(f"Unexpected error while compiling: {e}")
+        sys.exit(1)
 
     sio.emit("reload")
     logging.info("Reloaded successfully")
@@ -35,7 +48,7 @@ def monitor_changes(
     cmd_dir: str,
     cmd: str,
     latex_filename: str,
-    cmd_args: str,
+    cmd_args: List[str],
     cmd_override: Optional[str],
 ):
     logging.info(f"Observing directory {watch_path}")
